@@ -1,19 +1,13 @@
 import { Telegraf } from 'telegraf';
 import { connectDB, closeConnection } from './db';
 
-import reply from './middlewares/reply';
 import error from './middlewares/error';
-// Import other middlewares
-
-// Import commands
+import processChannelPost from './processChannelPost';
 
 const bot: Telegraf = new Telegraf(process.env.BOT_API_TOKEN);
 
-bot.use(reply);
 bot.use(error);
-// Use other middlewares
-
-// Bind commands
+bot.on('channel_post', processChannelPost);
 
 process.once('SIGINT', () => {
   closeConnection()
@@ -26,6 +20,6 @@ process.once('SIGTERM', () => {
     .catch(() => console.log('SIGTERM occurred, exiting with no db connection closed'));
 });
 
-connect()
+connectDB()
   .then(() => bot.launch())
   .catch((err) => console.log(err));
