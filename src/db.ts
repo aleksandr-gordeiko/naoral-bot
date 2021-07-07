@@ -1,5 +1,5 @@
 import { connect, connection } from 'mongoose';
-import ChannelModel from './models/Channel';
+import ChannelModel, { Channel } from './models/Channel';
 import { Post } from './models/Post';
 
 const url: string = `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB_NAME}`;
@@ -26,18 +26,23 @@ const saveChannelPost = async (channelId: number, postId: number, imageHash: str
   if (!channel) {
     await new ChannelModel({ id: channelId, posts: [post] }).save();
   } else {
-    await ChannelModel.updateOne({ id: channelId }, { $set: { posts: [post] } });
+    await ChannelModel.updateOne({ id: channelId }, { $push: { posts: [post] } });
   }
 };
 
-const getChannelPosts = async (channelId: number): Promise<Post[]> => (await ChannelModel
-  .findOne({ id: channelId })
-  .select('posts')
-  .exec() as unknown as Post[]);
+const findSimilarPosts = async (channelId: number, originalImageHash: string): Promise<Post[]> => {
+  const channel: Channel = await ChannelModel.findOne({ id: channelId });
+  const { posts } = channel;
+  const similarPosts: Post[] = [];
+  for (const post of posts) {
+    if (post.imageHash === originalImageHash) similarPosts.push(post);
+  }
+  return similarPosts;
+};
 
 export {
   connectDB,
   closeConnection,
   saveChannelPost,
-  getChannelPosts,
+  findSimilarPosts,
 };

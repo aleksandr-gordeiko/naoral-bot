@@ -2,16 +2,10 @@ import { getModelForClass, prop } from '@typegoose/typegoose';
 import { Post } from './Post';
 
 export class Channel {
-  @prop({
-    type: () => Number,
-    required: true,
-  })
+  @prop({ required: true })
   public id!: number;
 
-  @prop({
-    type: () => [Post],
-    required: true,
-  })
+  @prop({ type: Post, required: true })
   public posts!: Post[];
 }
 
