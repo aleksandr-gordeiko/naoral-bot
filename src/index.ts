@@ -3,11 +3,13 @@ import { connectDB, closeConnection } from './db';
 
 import error from './middlewares/error';
 import processChannelPost from './processChannelPost';
+import actionWhenAddedToChannel from './actionWhenAddedToChannel';
 
 const bot: Telegraf = new Telegraf(process.env.BOT_API_TOKEN);
 
 bot.use(error);
 bot.on('channel_post', processChannelPost);
+bot.on('my_chat_member', actionWhenAddedToChannel);
 
 process.once('SIGINT', () => {
   closeConnection()
