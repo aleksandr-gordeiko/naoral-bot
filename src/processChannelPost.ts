@@ -11,7 +11,12 @@ const getImageHashFromURL = async (photoURL: string): Promise<string> => (await 
 
 const processChannelPost = async (ctx: Context): Promise<void> => {
   try {
-    const photoId: string = ((ctx.update as ChannelPostUpdate).channel_post as PhotoMessage).photo[0].file_id;
+    let photoId: string;
+    try {
+      photoId = ((ctx.update as ChannelPostUpdate).channel_post as PhotoMessage).photo[0].file_id;
+    } catch (err) {
+      return;
+    }
     const photoURL: string = (await ctx.telegram.getFileLink(photoId)).toString();
     const channelId: number = (ctx.update as ChannelPostUpdate).channel_post.chat.id;
     const postId: number = (ctx.update as ChannelPostUpdate).channel_post.message_id;
