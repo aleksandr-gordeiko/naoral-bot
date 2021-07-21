@@ -40,19 +40,9 @@ const findSimilarPosts = async (channelId: number, originalImageHash: string): P
   return similarPosts;
 };
 
-const isPostInDB = async (channelId: number, postId: number): Promise<boolean> => {
-  const channel: Channel = await ChannelModel.findOne({ id: channelId });
-  const { posts } = channel;
-  for (const post of posts) {
-    if (post.id === postId) return true;
-  }
-  return false;
-};
-
 export {
   connectDB,
   closeConnection,
   saveChannelPost,
   findSimilarPosts,
-  isPostInDB,
 };
