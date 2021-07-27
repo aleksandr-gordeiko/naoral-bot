@@ -10,15 +10,12 @@ import { Post } from './models/Post';
 const getImageHashFromURL = async (photoURL: string): Promise<string> => (await Jimp.read(photoURL)).hash().toString();
 
 const processChannelPost = async (ctx: Context): Promise<void> => {
+  if (ctx.chat.type !== 'channel') return;
   try {
-    let photoId: string;
-    try {
-      photoId = ((ctx.update as ChannelPostUpdate).channel_post as PhotoMessage).photo[0].file_id;
-    } catch (err) {
-      return;
-    }
+    const photoId: string = ((ctx.update as ChannelPostUpdate).channel_post as PhotoMessage).photo[0].file_id;
     const photoURL: string = (await ctx.telegram.getFileLink(photoId)).toString();
     const channelId: number = (ctx.update as ChannelPostUpdate).channel_post.chat.id;
+    const channelUsername: string = ctx.chat.username;
     const postId: number = (ctx.update as ChannelPostUpdate).channel_post.message_id;
     const imageHash: string = await getImageHashFromURL(photoURL);
 
@@ -35,9 +32,15 @@ const processChannelPost = async (ctx: Context): Promise<void> => {
         stickerId,
         { reply_to_message_id: postId },
       );
+      const similarPostId = similarPosts[0].id;
+      await ctx.reply(
+        `[Уже было ${postId - similarPostId} постов назад](t.me/${channelUsername}/${similarPosts[0].id})`,
+        { parse_mode: 'Markdown', reply_to_message_id: postId },
+      );
     }
   } catch (err) {
-    console.log(err);
+    // eslint-disable-next-line no-useless-return
+    return;
   }
 };
 
