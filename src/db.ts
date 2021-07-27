@@ -1,4 +1,5 @@
 import { connect, connection } from 'mongoose';
+import Jimp from 'jimp';
 import ChannelModel, { Channel } from './models/Channel';
 import { Post } from './models/Post';
 
@@ -35,7 +36,8 @@ const findSimilarPosts = async (channelId: number, originalImageHash: string): P
   const { posts } = channel;
   const similarPosts: Post[] = [];
   for (const post of posts) {
-    if (post.imageHash === originalImageHash) similarPosts.push(post);
+    const diff = Jimp.compareHashes(post.imageHash, originalImageHash);
+    if (diff < 0.05) similarPosts.push(post);
   }
   return similarPosts;
 };

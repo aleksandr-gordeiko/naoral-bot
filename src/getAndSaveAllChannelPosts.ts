@@ -8,7 +8,7 @@ interface PostPictureLinks {
 }
 
 const savePost = async (channelId: number, postId: number, postPictureLink: string): Promise<void> => {
-  const imageHash: string = (await Jimp.read(postPictureLink)).hash().toString();
+  const imageHash: string = (await Jimp.read(postPictureLink)).hash(2).toString();
   await saveChannelPost(channelId, postId, imageHash);
 };
 

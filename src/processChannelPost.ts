@@ -1,4 +1,4 @@
-import Jimp = require('jimp');
+import Jimp from 'jimp';
 
 import { Context } from 'telegraf';
 import { Message, Update } from 'typegram';
@@ -7,7 +7,7 @@ import PhotoMessage = Message.PhotoMessage;
 import { findSimilarPosts, saveChannelPost } from './db';
 import { Post } from './models/Post';
 
-const getImageHashFromURL = async (photoURL: string): Promise<string> => (await Jimp.read(photoURL)).hash().toString();
+const getImageHashFromURL = async (photoURL: string): Promise<string> => (await Jimp.read(photoURL)).hash(2).toString();
 
 const processChannelPost = async (ctx: Context): Promise<void> => {
   if (ctx.chat.type !== 'channel') return;
