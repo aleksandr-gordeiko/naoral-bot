@@ -27,9 +27,15 @@ const get21PostPictureLinks = async (channelUsername: string, firstPostId: numbe
     const postElement: Element = postElements[j];
     const postId: string = postElement.getAttribute('href')
       .split('/')
-      .pop();
-    postPictureLinks.posts[postId] = postElement.getAttribute('style')
-      .split("'")[1];
+      .pop()
+      .split('?')[0];
+    try {
+      postPictureLinks.posts[postId] = postElement.getAttribute('style')
+        .split("'")[1];
+    } catch (err) {
+      postPictureLinks.posts[postId] = postElement.getAttribute('style')
+        .split('"')[1];
+    }
   }
   return postPictureLinks;
 };
