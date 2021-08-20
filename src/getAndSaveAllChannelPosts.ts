@@ -1,6 +1,6 @@
 import { JSDOM } from 'jsdom';
 import Jimp = require('jimp');
-import { saveChannelPost } from './db';
+import { getNextPostId, saveChannelPost } from './db';
 
 interface PostPictureLinks {
   hasNextPosts: boolean,
@@ -8,7 +8,15 @@ interface PostPictureLinks {
 }
 
 const savePost = async (channelId: number, postId: number, postPictureLink: string): Promise<void> => {
-  const imageHash: string = (await Jimp.read(postPictureLink)).hash(2).toString();
+  let imageHash: string;
+  try {
+    imageHash = (await Jimp.read(postPictureLink))
+      .hash(2)
+      .toString();
+  } catch (err) {
+    console.log(`${err}\n${postId}\n${postPictureLink}`);
+    return;
+  }
   await saveChannelPost(channelId, postId, imageHash);
 };
 
@@ -29,6 +37,7 @@ const get21PostPictureLinks = async (channelUsername: string, firstPostId: numbe
       .split('/')
       .pop()
       .split('?')[0];
+    if (Number(postId) < firstPostId) continue;
     try {
       postPictureLinks.posts[postId] = postElement.getAttribute('style')
         .split("'")[1];
@@ -41,15 +50,15 @@ const get21PostPictureLinks = async (channelUsername: string, firstPostId: numbe
 };
 
 const getAndSaveAllChannelPosts = async (channelUsername: string, channelId: number): Promise<void> => {
-  let i = 1;
-  while (i) {
-    const postPictureLinks = await get21PostPictureLinks(channelUsername, i);
+  let idx = await getNextPostId(channelId);
+  while (idx) {
+    const postPictureLinks = await get21PostPictureLinks(channelUsername, idx);
     const { hasNextPosts } = postPictureLinks;
     for (const postId in postPictureLinks.posts) {
       await savePost(channelId, Number(postId), postPictureLinks.posts[postId]);
     }
     if (!hasNextPosts) return;
-    i += 21;
+    idx += 21;
   }
 };
 

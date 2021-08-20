@@ -42,9 +42,21 @@ const findSimilarPosts = async (channelId: number, originalImageHash: string): P
   return similarPosts;
 };
 
+const getNextPostId = async (channelId: number): Promise<number> => {
+  const channel: Channel = await ChannelModel.findOne({ id: channelId });
+
+  if (!channel) return 1;
+  const { posts } = channel;
+
+  if (posts.length === 0) return 1;
+  posts.sort((p1, p2) => p2.id - p1.id);
+  return posts[0].id + 1;
+};
+
 export {
   connectDB,
   closeConnection,
   saveChannelPost,
   findSimilarPosts,
+  getNextPostId,
 };
