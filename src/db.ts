@@ -37,7 +37,7 @@ const findSimilarPosts = async (channelId: number, originalImageHash: string): P
   const similarPosts: Post[] = [];
   for (const post of posts) {
     const diff = Jimp.compareHashes(post.imageHash, originalImageHash);
-    if (diff < 0.05) similarPosts.push(post);
+    if (diff < 0.01) similarPosts.push(post);
   }
   return similarPosts;
 };
