@@ -1,7 +1,7 @@
 import { connect, connection } from 'mongoose';
-import Jimp from 'jimp';
 import ChannelModel, { Channel } from './models/Channel';
 import { Post } from './models/Post';
+import { leven } from './extra';
 
 const url: string = `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB_NAME}`;
 
@@ -36,8 +36,8 @@ const findSimilarPosts = async (channelId: number, originalImageHash: string): P
   const { posts } = channel;
   const similarPosts: Post[] = [];
   for (const post of posts) {
-    const diff = Jimp.compareHashes(post.imageHash, originalImageHash);
-    if (diff < 0.01) similarPosts.push(post);
+    const dist = leven(post.imageHash, originalImageHash);
+    if (dist < 12) similarPosts.push(post);
   }
   return similarPosts;
 };

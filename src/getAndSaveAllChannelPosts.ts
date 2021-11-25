@@ -1,6 +1,6 @@
 import { JSDOM } from 'jsdom';
-import Jimp = require('jimp');
 import { getNextPostId, saveChannelPost } from './db';
+import { getImageHashFromURL } from './extra';
 
 interface PostPictureLinks {
   hasNextPosts: boolean,
@@ -10,9 +10,7 @@ interface PostPictureLinks {
 const savePost = async (channelId: number, postId: number, postPictureLink: string): Promise<void> => {
   let imageHash: string;
   try {
-    imageHash = (await Jimp.read(postPictureLink))
-      .hash(2)
-      .toString();
+    imageHash = await getImageHashFromURL(postPictureLink);
   } catch (err) {
     console.log(`${err}\n${postId}\n${postPictureLink}`);
     return;

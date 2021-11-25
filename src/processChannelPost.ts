@@ -1,13 +1,10 @@
-import Jimp from 'jimp';
-
 import { Context } from 'telegraf';
 import { Message, Update } from 'typegram';
 import ChannelPostUpdate = Update.ChannelPostUpdate;
 import PhotoMessage = Message.PhotoMessage;
 import { findSimilarPosts, saveChannelPost } from './db';
 import { Post } from './models/Post';
-
-const getImageHashFromURL = async (photoURL: string): Promise<string> => (await Jimp.read(photoURL)).hash(2).toString();
+import { getImageHashFromURL } from './extra';
 
 const processChannelPost = async (ctx: Context): Promise<void> => {
   if (ctx.chat.type !== 'channel') return;
@@ -35,7 +32,11 @@ const processChannelPost = async (ctx: Context): Promise<void> => {
       const similarPostId = similarPosts[0].id;
       await ctx.reply(
         `[Уже было ${postId - similarPostId} постов назад](t.me/${channelUsername}/${similarPosts[0].id})`,
-        { parse_mode: 'Markdown', reply_to_message_id: postId },
+        {
+          parse_mode: 'Markdown',
+          reply_to_message_id: postId,
+          disable_web_page_preview: true,
+        },
       );
     }
   } catch (err) {
