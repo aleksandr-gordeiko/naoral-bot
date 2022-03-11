@@ -12,6 +12,7 @@
     "no-plusplus": "off",
     "prefer-destructuring": ["error", {"object": true, "array": false}],
     "no-continue": "off",
-    "no-bitwise": "off"
+    "no-bitwise": "off",
+    "no-multi-assign": "off"
   }
 }

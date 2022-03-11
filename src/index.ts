@@ -12,7 +12,7 @@ bot.use(error);
 bot.on('channel_post', processChannelPost);
 bot.on('my_chat_member', actionWhenAddedToChannel);
 
-let prevHash = 'a';
+let prevHash = '0';
 
 bot.on('text', async (ctx) => {
   const newHash = await getImageHashFromURL(ctx.message.text);

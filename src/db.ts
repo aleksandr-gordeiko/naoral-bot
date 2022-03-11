@@ -37,7 +37,7 @@ const findSimilarPosts = async (channelId: number, originalImageHash: string): P
   const similarPosts: Post[] = [];
   for (const post of posts) {
     const dist = leven(post.imageHash, originalImageHash);
-    if (dist < 12) similarPosts.push(post);
+    if (dist < 300) similarPosts.push(post);
   }
   return similarPosts;
 };

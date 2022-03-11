@@ -40,8 +40,7 @@ const processChannelPost = async (ctx: Context): Promise<void> => {
       );
     }
   } catch (err) {
-    // eslint-disable-next-line no-useless-return
-    return;
+    console.log(err);
   }
 };
 

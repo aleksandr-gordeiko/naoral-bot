@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -r dotenv/config build/index.js dotenv_config_path=./config.env",
+    "dev": "nodemon --inspect -r dotenv/config build/index.js dotenv_config_path=./config.env",
     "start": "node -r dotenv/config build/index.js dotenv_config_path=./config.env",
     "build": "tsc"
   },
@@ -14,8 +14,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "dotenv": "^10.0.0",
-    "jimp": "^0.16.1",
-    "imghash": "^0.0.9",
+    "jpeg-js": "^0.4.3",
     "jsdom": "^16.6.0",
     "mongoose": "^5.10.18",
     "nodemon": "^2.0.7",
