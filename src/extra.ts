@@ -10,16 +10,22 @@ const getImageHashFromURL = async (photoURL: string): Promise<string> => {
       .data,
     'binary',
   );
-  const hash = await imghash.hash(buffer, 16, 'binary');
+  const hash = await imghash.hash(buffer, 64, 'hex');
   return hash.toString();
 };
 
 const array = [];
 const characterCodeCache = [];
 
-function leven(first, second) {
-  let first1 = first;
-  let second1 = second;
+const hex2bin = (hex: string): string => {
+  let hexarr = hex.split('');
+  hexarr = hexarr.map((e) => (parseInt(e, 16).toString(2)).padStart(4, '0'));
+  return hexarr.join('');
+};
+
+function leven(first: string, second: string): number {
+  let first1 = hex2bin(first);
+  let second1 = hex2bin(second);
   if (first1 === second1) {
     return 0;
   }
