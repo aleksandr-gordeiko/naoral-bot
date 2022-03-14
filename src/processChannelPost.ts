@@ -30,9 +30,9 @@ const processChannelPost = async (ctx: Context): Promise<void> => {
         stickerId,
         { reply_to_message_id: postId },
       );
-      const similarPostId = similarPosts[0].id;
+      const similarPostId = similarPosts[0].postId;
       await ctx.reply(
-        `[Уже было ${postId - similarPostId} постов назад](t.me/${channelUsername}/${similarPosts[0].id})`,
+        `[Уже было ${postId - similarPostId} постов назад](t.me/${channelUsername}/${similarPosts[0].postId})`,
         {
           parse_mode: 'Markdown',
           reply_to_message_id: postId,

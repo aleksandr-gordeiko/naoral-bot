@@ -1,8 +1,11 @@
 import { getModelForClass, prop } from '@typegoose/typegoose';
 
 export class Post {
-  @prop({ required: true, index: true, unique: true })
-  public id!: number;
+  @prop({ required: true })
+  public channelId!: number;
+
+  @prop({ required: true })
+  public postId!: number;
 
   @prop({ required: true })
   public imageHash!: string;
