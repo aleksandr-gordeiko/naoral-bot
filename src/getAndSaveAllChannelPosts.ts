@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom';
 import { getNextPostId, saveChannelPost } from './db';
 import { getImageHashFromURL } from './extra';
+import logger from './logger';
 
 interface PostPictureLinks {
   hasNextPosts: boolean,
@@ -12,7 +13,7 @@ const savePost = async (channelId: number, postId: number, postPictureLink: stri
   try {
     imageHash = await getImageHashFromURL(postPictureLink);
   } catch (err) {
-    console.log(`${err}\n${postId}\n${postPictureLink}`);
+    logger.error(`${err}\n${postId}\n${postPictureLink}`);
     return;
   }
   await saveChannelPost(channelId, postId, imageHash);

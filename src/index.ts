@@ -1,5 +1,6 @@
 import { Telegraf } from 'telegraf';
 import { connectDB, closeConnection } from './db';
+import logger from './logger';
 
 import error from './middlewares/error';
 import processChannelPost from './processChannelPost';
@@ -23,15 +24,18 @@ bot.on('text', async (ctx) => {
 
 process.once('SIGINT', () => {
   closeConnection()
-    .then(() => console.log('SIGINT occurred, exiting'))
-    .catch(() => console.log('SIGINT occurred, exiting with no db connection closed'));
+    .then(() => logger.error('SIGINT occurred, exiting'))
+    .catch(() => logger.error('SIGINT occurred, exiting with no db connection closed'));
 });
 process.once('SIGTERM', () => {
   closeConnection()
-    .then(() => console.log('SIGTERM occurred, exiting'))
-    .catch(() => console.log('SIGTERM occurred, exiting with no db connection closed'));
+    .then(() => logger.error('SIGTERM occurred, exiting'))
+    .catch(() => logger.error('SIGTERM occurred, exiting with no db connection closed'));
 });
 
 connectDB()
   .then(() => bot.launch())
-  .catch((err) => console.log(err));
+  .then(() => logger.info('Bot started'))
+  .catch((err) => logger.error(err));
+
+// TODO disable listening while indexing

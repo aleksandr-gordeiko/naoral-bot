@@ -5,6 +5,7 @@ import PhotoMessage = Message.PhotoMessage;
 import { findSimilarPosts, saveChannelPost } from './db';
 import { Post } from './models/Post';
 import { getImageHashFromURL } from './extra';
+import logger from './logger';
 
 const processChannelPost = async (ctx: Context): Promise<void> => {
   if (ctx.chat.type !== 'channel') return;
@@ -40,7 +41,7 @@ const processChannelPost = async (ctx: Context): Promise<void> => {
       );
     }
   } catch (err) {
-    console.log(err);
+    logger.error(err);
   }
 };
 
